@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestion de courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="static/css/style.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-primary mb-3">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Gestion de courses</span>
+        <div>
+          <button id="clearData" class="btn btn-outline-light btn-sm">Effacer tout</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-5">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Ajouter un achat</h5>
+              <form id="purchaseForm">
+                <div class="mb-2">
+                  <label for="date">Date</label>
+                  <input id="date" class="form-control" type="date" required>
+                </div>
+
+                <div id="itemsContainer">
+                  <div class="item-row row g-2 align-items-end mb-2">
+                    <div class="col-5">
+                      <label>Produit</label>
+                      <input class="form-control product-name" type="text" placeholder="Nom" required>
+                    </div>
+                    <div class="col-3">
+                      <label>Quantité</label>
+                      <input class="form-control product-qty" type="number" min="1" value="1" required>
+                    </div>
+                    <div class="col-3">
+                      <label>Prix</label>
+                      <input class="form-control product-price" type="number" min="0" step="0.01" value="0.00" required>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-danger btn-remove-item" title="Supprimer">×</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <button id="addItem" class="btn btn-link">+ Ajouter un produit</button>
+                </div>
+
+                <div class="mb-2">
+                  <button type="submit" class="btn btn-primary">Enregistrer l'achat</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Totaux</h5>
+              <div class="mb-2">
+                <label>Période</label>
+                <div class="d-flex gap-2">
+                  <input id="from" type="date" class="form-control">
+                  <input id="to" type="date" class="form-control">
+                </div>
+              </div>
+              <div>
+                <button id="computeTotals" class="btn btn-outline-primary btn-sm">Calculer</button>
+              </div>
+              <hr>
+              <p><strong>Total dépensé :</strong> <span id="totalAmount">0 €</span></p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Top produits</h5>
+              <ul id="topProducts" class="list-group"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Historique des achats</h5>
+              <div class="mb-2 d-flex gap-2">
+                <input id="search" class="form-control" placeholder="Rechercher produit ou date">
+                <select id="sortOrder" class="form-select" style="width: 160px;">
+                  <option value="desc">Plus récent</option>
+                  <option value="asc">Plus ancien</option>
+                </select>
+              </div>
+              <div id="historyList"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Graphique des dépenses</h5>
+              <canvas id="expensesChart" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <div class="d-flex gap-2 mb-5">
+        <button id="exportJson" class="btn btn-outline-secondary">Exporter JSON</button>
+        <input id="importFile" type="file" accept="application/json" class="form-control" style="max-width:320px;">
+      </div>
+    </div>
+
+    <script src="static/js/app.js"></script>
+  </body>
+</html>
