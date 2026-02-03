@@ -1,0 +1,38 @@
+name: CI - Debug
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  debug-run:
+    name: Debug runner environment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print runner info
+        run: |
+          echo "Runner info";
+          uname -a || true;
+          echo "Node:"; node --version || true;
+          echo "Docker:"; docker --version || true;
+          echo "Buildx:"; docker buildx version || true;
+
+      - name: Print GitHub context
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.info(`actor: ${context.actor}`);
+            core.info(`repo: ${context.repo.owner}/${context.repo.repo}`);
+            core.info(`event: ${context.eventName}`);
+            core.info(`workflow: ${context.workflow}`);
+
+      - name: Create test artifact
+        run: |
+          echo "debug run" > debug.txt
+      - name: Upload debug artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifact
+          path: debug.txt
