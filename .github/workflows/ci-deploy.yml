@@ -1,70 +1,25 @@
-name: CI & Deploy
+name: CI & Deploy (minimal debug)
 
+# Trigger on push and allow manual dispatch for debugging
 on:
   push:
     branches: [ main ]
-
-permissions:
-  contents: read
-  packages: write
-  pages: write
-  id-token: write
+  workflow_dispatch: {}
 
 jobs:
-  build-and-push:
-    name: Build and push Docker image to GHCR
+  simple-debug:
+    name: Minimal debug job
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/gdc2:latest
-            ghcr.io/${{ github.repository_owner }}/gdc2:${{ github.sha }}
-
-  deploy-frontend:
-    name: Deploy frontend to GitHub Pages
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          publish_branch: gh-pages
-
-  deploy-heroku:
-    name: Optional: deploy to Heroku (if secrets present)
-    needs: build-and-push
-    if: ${{ secrets.HEROKU_API_KEY && secrets.HEROKU_APP_NAME }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Heroku (Docker)
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          usedocker: true
+      - name: Print runner info
+        run: |
+          echo "==== Runner info ===="
+          uname -a || true
+          echo "\n=== Node ==="; node --version || true
+          echo "\n=== Docker ==="; docker --version || true
+          echo "\n=== Env sample ==="; env | sort | head -n 50
+      - name: List workflow file
+        run: |
+          echo "--- workflow file contents ---"
+          sed -n '1,200p' .github/workflows/ci-deploy.yml || true
