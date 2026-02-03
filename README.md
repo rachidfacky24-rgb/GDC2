@@ -54,3 +54,19 @@ Je peux :
 - Configurer un déploiement sur Heroku/Render et vérifier que tout fonctionne
 
 Dites quelle action vous voulez que je fasse ensuite (par exemple : "commit & push maintenant").
+
+---
+
+## CI / Déploiement (GitHub Actions)
+Un workflow est ajouté dans `.github/workflows/ci-deploy.yml` qui :
+- Construit l'image Docker et la pousse sur GitHub Container Registry (GHCR) : `ghcr.io/<owner>/gdc2:latest` et `ghcr.io/<owner>/gdc2:<sha>`
+- Déploie le contenu du dépôt sur la branche `gh-pages` (frontend statique)
+- Propose un job optionnel pour déployer sur Heroku si vous définissez les secrets `HEROKU_API_KEY`, `HEROKU_APP_NAME` et `HEROKU_EMAIL`
+
+Secrets recommandés (si vous souhaitez déployer automatiquement sur Heroku) :
+- `HEROKU_API_KEY` (clé API Heroku)
+- `HEROKU_APP_NAME` (nom de l'app Heroku)
+- `HEROKU_EMAIL` (email du compte Heroku)
+
+Pour pousser l'image vers GHCR sans action supplémentaire, vous n'avez rien à configurer — le workflow publiera l'image automatiquement à chaque push sur `main`.
+
